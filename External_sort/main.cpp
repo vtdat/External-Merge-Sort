@@ -20,7 +20,6 @@ class External_Sort
     string inFileName = "";
     long ramSize = 0;
     string outFileName = "";
-    string path = "/Users/Dat/workspace/External_sort/External_sort/";
     //  constructor
     public: External_Sort(string inFile, string outFile, long size){
         inFileName = inFile;
@@ -71,7 +70,7 @@ class External_Sort
             //  convert outFile to fileName
             tempFile = to_string(numOutFile);
             //  copy buffer to chunk
-            ofstream outStream (path + tempFile + ".txt");
+            ofstream outStream (tempFile);
             ostream_iterator<string> output_iterator(outStream);
             copy(lines.begin(), lines.end(), output_iterator);
             
@@ -90,7 +89,7 @@ class External_Sort
         
         //  open file to stream
         for (int i = 0; i < numChunks; i++) {
-            inName = path + to_string(i) + ".txt";
+            inName = to_string(i);
             inFiles[i].open(inName);
         }
         
