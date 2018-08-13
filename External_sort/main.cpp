@@ -55,7 +55,7 @@ class External_Sort
         //  split big file to sorted chunks
         while (!in.eof()) {
             //  initialize buffer size
-            int buffSize = 0;
+            long buffSize = 0;
             
             //  initialize vector to store line loaded
             vector<string> lines;
@@ -140,7 +140,11 @@ class External_Sort
 };
 
 int main(int argc, const char * argv[]) {
-    External_Sort sort("/Users/Dat/workspace/External_sort/External_sort/english.txt", "/Users/Dat/workspace/External_sort/External_sort/result.txt", 200000);
+    if (argc != 4) {
+        perror("Not enough arguments!");
+        exit(EXIT_FAILURE);
+    }
+    External_Sort sort(argv[1], argv[2], atol(argv[3]));
     sort.splitFile();
     sort.mergeFiles();
     return 0;
