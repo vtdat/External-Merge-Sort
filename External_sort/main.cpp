@@ -15,13 +15,14 @@
 using namespace std;
 class External_Sort
 {
-    private:
+private:
     int numChunks = 0;
     string inFileName = "";
     long ramSize = 0;
     string outFileName = "";
     //  constructor
-    public: External_Sort(string inFile, string outFile, long size){
+public:
+    External_Sort(string inFile, string outFile, long size){
         inFileName = inFile;
         outFileName = outFile;
         ramSize = size;
@@ -36,21 +37,25 @@ class External_Sort
     };
 
     // comparision
-    struct comp {
-        bool operator ()(const QueueNode a, const QueueNode b) {
-            return (a.element).compare(b.element);
+    struct Comp {
+    public:
+        bool operator ()(const QueueNode a, const QueueNode b) const {
+            return (b.element).compare(a.element) < 0;
         }
     };
 
     //  split file
-    public: void splitFile() {
+public:
+    void splitFile() {
         ifstream in;
         in.open(inFileName);
         string tempFile;
         
         //  track number of file created
         int numOutFile = 0;
-
+        
+        //  last line of previous chunk
+        string lastLine;
         //  split big file to sorted chunks
         while (!in.eof()) {
             //  initialize buffer size
@@ -58,13 +63,27 @@ class External_Sort
             
             //  initialize vector to store line loaded
             vector<string> lines;
+            
+            //  put last line of previous chunk to list
+            if (!lastLine.empty()) {
+                lines.push_back(lastLine);
+                lastLine.clear();
+            }
+            
+            //  line from file
             string line;
+            
+            //  read file to list
             while (getline(in, line) && buffSize < ramSize) {
-                lines.push_back(line+"\n");
                 buffSize += (int)line.length();
+                if (buffSize >= ramSize) {
+                    lastLine = line+"\n";
+                    break;
+                }
+                lines.push_back(line+"\n");
             };
             
-            //  sort vector of string
+            //  sort list of string
             sort(lines.begin(), lines.end());
             
             //  convert outFile to fileName
@@ -83,7 +102,8 @@ class External_Sort
     }
     
     // merge file using merge K-sorted array
-    public: void mergeFiles () {
+public:
+    void mergeFiles () {
         ifstream inFiles[numChunks];
         string inName;
         
@@ -101,7 +121,7 @@ class External_Sort
         QueueNode nodes[numChunks];
         
         //  create priority queue
-        priority_queue<QueueNode, vector<QueueNode>, comp> pq;
+        priority_queue<QueueNode, vector<QueueNode>, Comp> pq;
         
         //  read data to queue
         for (int i = 0; i < numChunks; i++) {
@@ -140,7 +160,7 @@ class External_Sort
 
 int main(int argc, const char * argv[]) {
     if (argc != 4) {
-        perror("Not enough arguments!");
+        perror("Not enough arguments!\n");
         exit(EXIT_FAILURE);
     }
     External_Sort sort(argv[1], argv[2], atol(argv[3]));
@@ -148,6 +168,3 @@ int main(int argc, const char * argv[]) {
     sort.mergeFiles();
     return 0;
 }
-
-
-
