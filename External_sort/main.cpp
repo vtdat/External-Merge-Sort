@@ -29,6 +29,7 @@ public:
     };
     
     // Queue node to be put in priority queue
+private:
     struct QueueNode {
         // line stored
         string element;
@@ -37,22 +38,38 @@ public:
     };
 
     // comparision
+private:
     struct Comp {
     public:
         bool operator ()(const QueueNode a, const QueueNode b) const {
             return (b.element).compare(a.element) < 0;
         }
     };
-
+    
+    //  check if file is empty
+private:
+    bool is_empty(ifstream& pFile)
+    {
+        return pFile.peek() == std::ifstream::traits_type::eof();
+    }
     //  split file
 public:
     void splitFile() {
+        
+        //  open input file
         ifstream in;
         in.open(inFileName);
         if(!in.good()){
-            perror("Error while opening file:");
+            perror("Error while opening file");
             exit(EXIT_FAILURE);
         }
+        
+        //  check if file is empty
+        if (is_empty(in)) {
+            cout << "File " << inFileName <<" is empty!\n";
+            exit(EXIT_SUCCESS);
+        }
+        
         string tempFile;
         
         //  track number of file created
@@ -116,7 +133,7 @@ public:
             inName = to_string(i);
             inFiles[i].open(inName);
             if(!inFiles[i].good()){
-                perror("Error while opening file:");
+                perror("Error while opening file");
                 exit(EXIT_FAILURE);
             }
         }
