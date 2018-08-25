@@ -16,10 +16,10 @@ using namespace std;
 class External_Sort
 {
 private:
-    int numChunks = 0;
-    string inFileName = "";
-    long ramSize = 0;
-    string outFileName = "";
+    int numChunks;
+    string inFileName;
+    long ramSize;
+    string outFileName;
     //  constructor
 public:
     External_Sort(string inFile, string outFile, long size){
@@ -49,6 +49,10 @@ public:
     void splitFile() {
         ifstream in;
         in.open(inFileName);
+        if(!in.good()){
+            perror("Error while opening file:");
+            exit(EXIT_FAILURE);
+        }
         string tempFile;
         
         //  track number of file created
@@ -111,6 +115,10 @@ public:
         for (int i = 0; i < numChunks; i++) {
             inName = to_string(i);
             inFiles[i].open(inName);
+            if(!inFiles[i].good()){
+                perror("Error while opening file:");
+                exit(EXIT_FAILURE);
+            }
         }
         
         
@@ -157,8 +165,10 @@ public:
         }
         
         //  close all input and output streams
-        for (int i = 0; i < numChunks; i++)
+        for (int i = 0; i < numChunks; i++){
             inFiles[i].close();
+            remove(to_string(i).c_str());
+        }
         out.close();
     }
     
