@@ -150,6 +150,12 @@ public:
             }
         };
         
+        //  put remaining elements to output file
+        while (!pq.empty()){
+            out << pq.top().element << "\n";
+            pq.pop();
+        }
+        
         //  close all input and output streams
         for (int i = 0; i < numChunks; i++)
             inFiles[i].close();
