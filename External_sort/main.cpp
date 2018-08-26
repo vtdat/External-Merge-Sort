@@ -5,6 +5,19 @@
 //  Created by Vu Tuan Dat on 8/11/18.
 //
 
+
+// 		IDEA
+//	1.	Split big file of N lines to K = (N/R) where K, R are number of chunks and Ram size (Input) respectively 
+//	2.	Sort individual chunk using std::sort 
+//	3.	Using Merge K-sorted array with priority_queue to merge K chunks to one output
+
+//      COMPLEXITY
+//  1.  O(N)            :   iterate N lines
+//  2.  O(N*log(N/K))   :   sort K chunks, each chunk takes O((N/K)*log(N/K))
+//  3.  O(N*l*log(N/K)) :   where l is average length of lines
+//  => (1) and (2) are much smaller than (3) so we can consider it is approximate to O(N*l*log(N/K)) or O(fileSize * log(N/K))
+//      since N(num of lines) * l(average length of lines) ~ fizeSize
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -20,6 +33,7 @@ private:
     string inFileName;
     long ramSize;
     string outFileName;
+    
     //  constructor
 public:
     External_Sort(string inFile, string outFile, long size){
